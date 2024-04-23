@@ -27,7 +27,7 @@ def read_metadata(path):
             }
     return meta_data
 
-def process_interactions(path, user_field, s_field):
+def process_interactions(path, user_field, s_field,mode='train'):
     sequences = defaultdict(list)
     with open(path, newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -38,14 +38,17 @@ def process_interactions(path, user_field, s_field):
                 continue
             user_id = user_field.get_id(user_id)
             asin = s_field.get_id(asin)
-            sequences[user_id]=[]
+            user_squence=[]
             for history_asin in history.split(' '):
                 if len(history_asin)<3:
                     continue # exclude blank
                 history_asin_id=s_field.get_id(history_asin)
-                sequences[user_id].append(history_asin_id)
-            sequences[user_id].append(asin)
-                
+                user_squence.append(history_asin_id)
+            user_squence.append(asin)
+            if mode!='train':
+                sequences[user_id]=[user_squence[-1]]
+            else:
+                sequences[user_id]=user_squence
             
     return sequences
 
@@ -65,7 +68,7 @@ for category_name in Category_list:
 
     for split in ['train', 'valid', 'test']:
         interaction_path = f'{base_path}/interaction/{category_name}.{split}.csv'
-        sequences = process_interactions(interaction_path, user_field, s_field)
+        sequences = process_interactions(interaction_path, user_field, s_field,split)
         output_file = os.path.join(output_dir, f'{split}.json')
         write_json(sequences, output_file)
 
