@@ -2,7 +2,7 @@ import json
 import os
 import csv
 from collections import defaultdict
-
+MIN_length=4
 class LabelField:
     def __init__(self):
         self.label2id = dict()
@@ -33,7 +33,9 @@ def process_interactions(path, user_field, s_field):
         reader = csv.reader(file)
         next(reader)  # Skip header
         for row in reader:
-            user_id, asin, _, timestamp, _ = row
+            user_id, asin, _, timestamp, history = row
+            if len(history.split(' '))<=MIN_length:
+                continue
             user_id = user_field.get_id(user_id)
             asin = s_field.get_id(asin)
             sequences[user_id].append((asin, int(timestamp)))
