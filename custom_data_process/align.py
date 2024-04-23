@@ -38,7 +38,15 @@ def process_interactions(path, user_field, s_field):
                 continue
             user_id = user_field.get_id(user_id)
             asin = s_field.get_id(asin)
-            sequences[user_id].append((asin, int(timestamp)))
+            sequences[user_id]=[]
+            for history_asin in history.split(' '):
+                if len(history_asin)<3:
+                    continue # exclude blank
+                history_asin_id=s_field.get_id(history_asin)
+                sequences[user_id].append(history_asin_id)
+            sequences[user_id].append(asin)
+                
+            
     return sequences
 
 def write_json(data, path):
