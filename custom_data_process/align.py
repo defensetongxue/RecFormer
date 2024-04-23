@@ -45,10 +45,11 @@ def process_interactions(path, user_field, s_field,mode='train'):
                 history_asin_id=s_field.get_id(history_asin)
                 user_squence.append(history_asin_id)
             user_squence.append(asin)
-            if mode!='train':
-                sequences[user_id]=[user_squence[-1]]
-            else:
-                sequences[user_id]=user_squence
+            sequences[user_id]=user_squence
+            # if mode!='train':
+            #     sequences[user_id]=[user_squence[-1]]
+            # else:
+            #     sequences[user_id]=user_squence
             
     return sequences
 
